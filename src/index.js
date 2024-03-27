@@ -69,6 +69,7 @@ export default class SubPoints {
      * @private
      */
     this._element = null;
+    this.onKeyUp = this.onKeyUp.bind(this);
   }
   /**
    * Normalize input data
@@ -90,14 +91,25 @@ export default class SubPoints {
 
     return newData;
   }
-  checkPreviousBlocksForTopics(currentBlockIndex) {
-    for (let i = currentBlockIndex - 1; i >= 0; i--) {
+  checkPreviousBlocksForPoints(currentBlockIndex) {
+    for (let i = currentBlockIndex; i >= 0; i--) {
       const block = this.api.blocks.getBlockByIndex(i);
       if (block.name == "points") {
         return true;
       }
     }
     return false;
+  }
+  onKeyUp(e) {
+    if (e.code !== "Backspace" && e.code !== "Delete") {
+      return;
+    }
+
+    const { textContent } = this._element;
+
+    if (textContent === "") {
+      this._element.innerHTML = "";
+    }
   }
 
   /**
@@ -110,7 +122,7 @@ export default class SubPoints {
     if (
       this.api.blocks.getCurrentBlockIndex() == -1 ||
       (this.api.blocks.getCurrentBlockIndex() > -1 &&
-        this.checkPreviousBlocksForTopics(
+        this.checkPreviousBlocksForPoints(
           this.api.blocks.getCurrentBlockIndex()
         ))
     ) {
@@ -272,7 +284,8 @@ export default class SubPoints {
      * Add Placeholder
      */
     tag.dataset.placeholder = this.api.i18n.t(this._settings.placeholder || "");
-
+    tag.contentEditable = true;
+    tag.addEventListener("keyup", this.onKeyUp);
     return tag;
   }
 
