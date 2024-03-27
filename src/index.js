@@ -273,7 +273,7 @@ export default class SubPoints {
     /**
      * Add text to block
      */
-    tag.innerHTML = this._data.text || "";
+    tag.innerHTML = this._data.text || "New SubPoint";
 
     /**
      * Add styles class
