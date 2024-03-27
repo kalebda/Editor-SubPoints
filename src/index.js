@@ -4,14 +4,14 @@
 import "./index.css";
 
 /**
- * @typedef {object} HeaderData
+ * @typedef {object} SubPointData
  * @description Tool's input and output data format
- * @property {string} text — Header's content
- * @property {number} level - Header's level from 1 to 6
+ * @property {string} text — SubPoint's content
+ * @property {number} level - SubPoint's level from 1 to 6
  */
 
 /**
- * @typedef {object} HeaderConfig
+ * @typedef {object} SubPointConfig
  * @description Tool's config from Editor
  * @property {string} placeholder — Block's placeholder
  * @property {number[]} levels — Heading levels
@@ -19,7 +19,7 @@ import "./index.css";
  */
 
 /**
- * Header block for the Editor.js.
+ * SubPoint block for the Editor.js.
  *
  * @author CodeX (team@ifmo.su)
  * @copyright CodeX 2018
@@ -30,7 +30,7 @@ export default class SubPoints {
   /**
    * Render plugin`s main Element and fill it with saved data
    *
-   * @param {{data: HeaderData, config: HeaderConfig, api: object}}
+   * @param {{data: SubPointData, config: SubPointConfig, api: object}}
    *   data — previously saved data
    *   config - user config for Tool
    *   api - Editor.js API
@@ -45,12 +45,12 @@ export default class SubPoints {
      */
     this._CSS = {
       block: this.api.styles.block,
-      wrapper: "ce-header",
+      wrapper: "ce-subPoint",
     };
     /**
      * Tool's settings passed from Editor
      *
-     * @type {HeaderConfig}
+     * @type {SubPointConfig}
      * @private
      */
     this._settings = config;
@@ -58,7 +58,7 @@ export default class SubPoints {
     /**
      * Block's data
      *
-     * @type {HeaderData}
+     * @type {SubPointData}
      * @private
      */
     this._data = this.normalizeData(data);
@@ -73,9 +73,9 @@ export default class SubPoints {
   /**
    * Normalize input data
    *
-   * @param {HeaderData} data - saved data to process
+   * @param {SubPointData} data - saved data to process
    *
-   * @returns {HeaderData}
+   * @returns {SubPointData}
    * @private
    */
   normalizeData(data) {
@@ -90,6 +90,15 @@ export default class SubPoints {
 
     return newData;
   }
+  checkPreviousBlocksForTopics(currentBlockIndex) {
+    for (let i = currentBlockIndex - 1; i >= 0; i--) {
+      const block = this.api.blocks.getBlockByIndex(i);
+      if (block.name == "points") {
+        return true;
+      }
+    }
+    return false;
+  }
 
   /**
    * Return Tool's view
@@ -101,8 +110,9 @@ export default class SubPoints {
     if (
       this.api.blocks.getCurrentBlockIndex() == -1 ||
       (this.api.blocks.getCurrentBlockIndex() > -1 &&
-        this.api.blocks.getBlockByIndex(this.api.blocks.getCurrentBlockIndex())
-          .name == "points")
+        this.checkPreviousBlocksForTopics(
+          this.api.blocks.getCurrentBlockIndex()
+        ))
     ) {
       this._element = this.getTag();
       return this._element;
@@ -115,11 +125,10 @@ export default class SubPoints {
    * Method that specified how to merge two Text blocks.
    * Called by Editor.js by backspace at the beginning of the Block
    *
-   * @param {HeaderData} data - saved data to merger with current block
+   * @param {SubPointData} data - saved data to merger with current block
    * @public
    */
   merge(data) {
-    console.log("----------->", data);
     const newData = {
       text: this.data.text + data.text,
       level: this.data.level,
@@ -132,7 +141,7 @@ export default class SubPoints {
    * Validate Text block data:
    * - check for emptiness
    *
-   * @param {HeaderData} blockData — data received after saving
+   * @param {SubPointData} blockData — data received after saving
    * @returns {boolean} false if saved data is not correct, otherwise true
    * @public
    */
@@ -144,7 +153,7 @@ export default class SubPoints {
    * Extract Tool's data from the view
    *
    * @param {HTMLHeadingElement} toolsContent - Text tools rendered view
-   * @returns {HeaderData} - saved data
+   * @returns {SubPointData} - saved data
    * @public
    */
   save(toolsContent) {
@@ -155,7 +164,7 @@ export default class SubPoints {
   }
 
   /**
-   * Allow Header to be converted to/from other blocks
+   * Allow SubPoint to be converted to/from other blocks
    */
   static get conversionConfig() {
     return {
@@ -177,7 +186,7 @@ export default class SubPoints {
   /**
    * Get current Tools`s data
    *
-   * @returns {HeaderData} Current data
+   * @returns {SubPointData} Current data
    * @private
    */
   get data() {
@@ -192,7 +201,7 @@ export default class SubPoints {
    * - at the this._data property
    * - at the HTML
    *
-   * @param {HeaderData} data — data to set
+   * @param {SubPointData} data — data to set
    * @private
    */
   set data(data) {
@@ -208,17 +217,17 @@ export default class SubPoints {
        *
        * @type {HTMLHeadingElement}
        */
-      const newHeader = this.getTag();
+      const newSubPoint = this.getTag();
 
       /**
        * Save Block's content
        */
-      newHeader.innerHTML = this._element.innerHTML;
+      newSubPoint.innerHTML = this._element.innerHTML;
 
       /**
        * Replace blocks
        */
-      this._element.parentNode.replaceChild(newHeader, this._element);
+      this._element.parentNode.replaceChild(newSubPoint, this._element);
 
       /**
        * Save new block to private variable
@@ -226,7 +235,7 @@ export default class SubPoints {
        * @type {HTMLHeadingElement}
        * @private
        */
-      this._element = newHeader;
+      this._element = newSubPoint;
     }
 
     /**
@@ -239,7 +248,7 @@ export default class SubPoints {
 
   /**
    * Get tag for target level
-   * By default returns second-leveled header
+   * By default returns second-leveled SubPoint
    *
    * @returns {HTMLElement}
    */
@@ -336,7 +345,7 @@ export default class SubPoints {
    */
 
   /**
-   * Available header levels
+   * Available SubPoint levels
    *
    * @returns {level[]}
    */
@@ -355,7 +364,7 @@ export default class SubPoints {
   }
 
   /**
-   * Handle H1-H6 tags on paste to substitute it with header Tool
+   * Handle H1-H6 tags on paste to substitute it with SubPoint Tool
    *
    * @param {PasteEvent} event - event with pasted content
    */

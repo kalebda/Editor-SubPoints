@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "keywords": [
     "codex editor",
-    "header",
+    "subpoints",
     "editor.js",
     "editorjs"
   ],
@@ -26,8 +26,8 @@
     "build": "vite build"
   },
   "author": {
-    "name": "CodeX",
-    "email": "team@codex.so"
+    "name": "kalebu2468",
+    "email": "kalebu246@gmail.com"
   },
   "devDependencies": {
     "vite": "^4.5.0",

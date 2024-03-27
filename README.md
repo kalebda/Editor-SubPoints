@@ -61,8 +61,8 @@ All properties are optional.
 | Field        | Type       | Description                   |
 | ------------ | ---------- | ----------------------------- |
 | placeholder  | `string`   | subpoint's placeholder string |
-| levels       | `number[]` | enabled heading levels        |
-| defaultLevel | `number`   | default heading level         |
+| levels       | `number[]` | enabled subpoint levels       |
+| defaultLevel | `number`   | default subpoint level        |
 
 ```javascript
 var editor = EditorJS({
@@ -92,10 +92,10 @@ You can select one of six levels for heading.
 
 ## Output data
 
-| Field | Type     | Description                                        |
-| ----- | -------- | -------------------------------------------------- |
-| text  | `string` | subpoint's text                                    |
-| level | `number` | level of subpoint: 1 for H1, 2 for H2 ... 6 for H6 |
+| Field | Type     | Description       |
+| ----- | -------- | ----------------- |
+| text  | `string` | subpoint's text   |
+| level | `number` | level of subpoint |
 
 ```json
 {
