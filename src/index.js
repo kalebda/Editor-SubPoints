@@ -258,9 +258,81 @@ export default class SubPoints {
     }
   }
 
+  createPopUp() {
+    // Create main div
+    const mainDiv = document.createElement("div");
+    mainDiv.classList.add(
+      "ce-example__content",
+      "ce-example__content--with-bg",
+      "_ce-example__content--small"
+    );
+
+    // Create div for popup
+    const popupDiv = document.createElement("div");
+    popupDiv.classList.add("ce-example-popup");
+
+    // Create overlay div
+    const overlayDiv = document.createElement("div");
+    overlayDiv.classList.add("ce-example-popup__overlay");
+    popupDiv.appendChild(overlayDiv);
+
+    // Create popup content div
+    const popupContentDiv = document.createElement("div");
+    popupContentDiv.classList.add("ce-example-popup__popup");
+
+    //Add a Title
+    const title = document.createElement("div");
+    title.classList.add("ce-example-popup__title");
+    title.textContent = "Create a Sub Point"; // Set the text content of the title
+    popupContentDiv.appendChild(title);
+    // Create input element
+    const input = document.createElement("input");
+    input.classList.add("ce-example--popup__input");
+    popupContentDiv.appendChild(input);
+    input.placeholder = "SubPoint Title";
+    //create action containers
+    const actionContainerDiv = document.createElement("div");
+    actionContainerDiv.classList.add("ce-example--action__container");
+    // Create OK button
+    const okButton = document.createElement("button");
+    okButton.classList.add("ce-example--action__ok");
+    okButton.textContent = "OK";
+    actionContainerDiv.appendChild(okButton);
+    // Add event listener to pass the input value on OK button click
+    okButton.addEventListener("click", () => {
+      const inputValue = input.value;
+      if (inputValue) {
+        this.data = { text: inputValue, level: this.currentLevel };
+      } else {
+        this.api.blocks.delete(this.api.blocks.getCurrentBlockIndex());
+      }
+      // Remove the popup from the DOM
+      mainDiv.remove();
+    });
+    // Create cancel button
+    const cancelButton = document.createElement("button");
+    cancelButton.classList.add("ce-example--action__delete");
+    cancelButton.textContent = "Cancel";
+    actionContainerDiv.appendChild(cancelButton);
+    // Add event listener to close the popup on cancel button click
+    cancelButton.addEventListener("click", function () {
+      // Remove the popup from the DOM
+      mainDiv.remove();
+    });
+
+    //append action container to popup content
+    popupContentDiv.appendChild(actionContainerDiv);
+    // Append popup content div to popup div
+    popupDiv.appendChild(popupContentDiv);
+
+    // Append popup div to main div
+    mainDiv.appendChild(popupDiv);
+    document.body.appendChild(mainDiv);
+  }
+
   /**
    * Get tag for target level
-   * By default returns second-leveled SubPoint
+   * By default returns second-leveled Sub-Point
    *
    * @returns {HTMLElement}
    */
@@ -268,25 +340,34 @@ export default class SubPoints {
     /**
      * Create element for current Block's level
      */
-    const tag = document.createElement(this.currentLevel.tag);
+    if (!this._data.text) {
+      this.createPopUp();
+      const tag = document.createElement("DIV");
+      tag.innerHTML = "";
+      return tag;
+    } else {
+      const tag = document.createElement(this.currentLevel.tag);
 
-    /**
-     * Add text to block
-     */
-    tag.innerHTML = this._data.text || "New SubPoint";
+      /**
+       * Add text to block
+       */
+      tag.innerHTML = this._data.text || "";
 
-    /**
-     * Add styles class
-     */
-    tag.classList.add(this._CSS.wrapper);
+      /**
+       * Add styles class
+       */
+      tag.classList.add(this._CSS.wrapper);
 
-    /**
-     * Add Placeholder
-     */
-    tag.dataset.placeholder = this.api.i18n.t(this._settings.placeholder || "");
-    tag.contentEditable = true;
-    tag.addEventListener("keyup", this.onKeyUp);
-    return tag;
+      /**
+       * Add Placeholder
+       */
+      tag.dataset.placeholder = this.api.i18n.t(
+        this._settings.placeholder || ""
+      );
+      tag.contentEditable = true;
+      tag.addEventListener("keyup", this.onKeyUp);
+      return tag;
+    }
   }
 
   getNoNode() {
