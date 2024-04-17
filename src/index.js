@@ -70,7 +70,6 @@ export default class SubPoints {
      * @private
      */
     this._element = null;
-    this.onKeyUp = this.onKeyUp.bind(this);
   }
   /**
    * Normalize input data
@@ -100,17 +99,6 @@ export default class SubPoints {
       }
     }
     return false;
-  }
-  onKeyUp(e) {
-    if (e.code !== "Backspace" && e.code !== "Delete") {
-      return;
-    }
-
-    const { textContent } = this._element;
-
-    if (textContent === "") {
-      this._element.innerHTML = "";
-    }
   }
 
   /**
@@ -375,7 +363,6 @@ export default class SubPoints {
         this._settings.placeholder || ""
       );
       tag.contentEditable = this.readOnly ? "false" : "true";
-      tag.addEventListener("keyup", this.onKeyUp);
       return tag;
     }
   }
@@ -526,7 +513,7 @@ export default class SubPoints {
    */
   static get pasteConfig() {
     return {
-      tags: ["H1", "H2", "H3", "H4", "H5", "H6"],
+      tags: ["H4"],
     };
   }
 
